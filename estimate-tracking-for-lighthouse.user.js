@@ -183,9 +183,11 @@ if (milestone_progress !== null && totalHours > 0.0) {
     } else {
         suffix = 'th';
     }
+    months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    expectedDateDisp = months[expectedDate.getMonth()] + ' ' + expectedDate.getDate();
     milestone_progress.innerHTML += '<br>Total effort left: ' + totalHoursDisp
         + '.<br>Critical path: ' + maxHoursUser
         + ' with ' + maxHoursDisp
         + ' (' + maxHoursDispDays
-        + ').<br>Estimated completion: ' + expectedDate.toLocaleFormat('%b %e') + suffix + '.';
+        + ').<br>Estimated completion: ' + expectedDateDisp + suffix + '.';
 }

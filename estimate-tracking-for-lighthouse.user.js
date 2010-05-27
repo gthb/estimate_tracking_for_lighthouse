@@ -94,6 +94,9 @@ var ticketLists = document.evaluate(
 
 // Add up the hours listed for each ticket in each ticket list
 var useDays = false;
+var totalHours = 0.0;
+var maxHours = 0.0;
+var maxHoursUser = null;
 for (var i=0; i < ticketLists.snapshotLength; i++) {
   var userHours = 0.0;
 
@@ -142,5 +145,47 @@ for (var i=0; i < ticketLists.snapshotLength; i++) {
 
     // Append user's total hours to heading text
     heading.iterateNext().innerHTML += ' - ' + timeDisp + ' left';
+
+    totalHours += userHours;
+    if (userHours > maxHours) {
+        maxHours = userHours;
+        maxHoursUser = document.evaluate(
+            'h3/img/@title',
+            ticketLists.snapshotItem(i),
+            null,
+            XPathResult.STRING_TYPE,
+            null).stringValue;
+    }
   }
+}
+
+var milestone_progress = document.evaluate(
+    '//div[contains(@class, "greet")]/p[contains(@class, "gmeta")]',
+    document,
+    null,
+    XPathResult.FIRST_ORDERED_NODE_TYPE,
+    null).singleNodeValue;
+
+if (milestone_progress !== null && totalHours > 0.0) {
+    var totalHoursDisp = formatTime(totalHours, false);
+    var maxHoursDisp = formatTime(maxHours, false);
+    var maxHoursDispDays = formatTime(maxHours, true);
+    var expectedDate = new Date();
+    expectedDate.setDate(new Date().getDate() + Math.ceil(maxHours / 8.0));
+    var suffix;
+    var monthday = expectedDate.getDate();
+    if (monthday == 2 || monthday == 22) {
+        suffix = 'nd';
+    } else if (monthday == 3 || monthday == 23) {
+        suffix = 'rd';
+    } else if (monthday == 1 || monthday == 21) {
+        suffix = 'st';
+    } else {
+        suffix = 'th';
+    }
+    milestone_progress.innerHTML += '<br>Total effort left: ' + totalHoursDisp
+        + '.<br>Critical path: ' + maxHoursUser
+        + ' with ' + maxHoursDisp
+        + ' (' + maxHoursDispDays
+        + ').<br>Estimated completion: ' + expectedDate.toLocaleFormat('%b %e') + suffix + '.';
 }

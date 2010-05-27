@@ -47,6 +47,7 @@
 // @namespace     http://sitr.us/
 // @description   Displays the total time left on open tickets on the milestone page of Lighthouse.
 // @include       http://*.lighthouseapp.com/projects/*/milestones/*
+// @include       https://*.lighthouseapp.com/projects/*/milestones/*
 // ==/UserScript==
 
 function FormatFloat(pFloat, pDp){

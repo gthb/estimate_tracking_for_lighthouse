@@ -58,7 +58,7 @@ function FormatFloat(pFloat, pDp){
 function formatTime(hours, useDays) {
   var timeDisp = '';
   if (useDays && hours >= 8.0) {
-    var days = Math.floor(userHours / 8.0);
+    var days = Math.floor(hours / 8.0);
     if (days == 1) {
       timeDisp += days + ' day ';
     } else {

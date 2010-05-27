@@ -141,10 +141,10 @@ for (var i=0; i < ticketLists.snapshotLength; i++) {
     timeDisp = formatTime(userHours, useDays);
 
     // Find ticket list heading
-    var heading = document.evaluate('h3', ticketLists.snapshotItem(i), null, XPathResult.ANY_TYPE, null);
+    var heading = document.evaluate('h3/span[contains(@class, "quiet")]', ticketLists.snapshotItem(i), null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
 
     // Append user's total hours to heading text
-    heading.iterateNext().innerHTML += ' - ' + timeDisp + ' left';
+    heading.innerHTML += ' - ' + timeDisp + ' left';
 
     totalHours += userHours;
     if (userHours > maxHours) {

@@ -97,6 +97,7 @@ var useDays = false;
 var totalHours = 0.0;
 var maxHours = 0.0;
 var maxHoursUser = null;
+var unestimatedTickets = [];
 for (var i=0; i < ticketLists.snapshotLength; i++) {
   var userHours = 0.0;
 
@@ -137,7 +138,7 @@ for (var i=0; i < ticketLists.snapshotLength; i++) {
     }
 
     if (!estimateFound) {
-      thisTicket.innerHTML += ' <span style="background-color: yellow;">(no estimate)</span>';
+      unestimatedTickets.push(thisTicket);
     }
     
     thisTicket = tickets.iterateNext();
@@ -195,8 +196,14 @@ if (milestone_progress !== null && totalHours > 0.0) {
     months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     expectedDateDisp = months[expectedDate.getMonth()] + ' ' + expectedDate.getDate();
     milestone_progress.innerHTML += '<br>Total effort left: ' + totalHoursDisp
-        + '.<br>Critical path: ' + maxHoursUser
+        + '.<br><span style="background-color: yellow;">Note, though: there are ' + unestimatedTickets.length + ' unestimated tickets!</span>'
+        + '<br>Critical path: ' + maxHoursUser
         + ' with ' + maxHoursDisp
         + ' (' + maxHoursDispDays
         + ').<br>Estimated completion: ' + expectedDateDisp + suffix + '.';
+
+    for (var i=0; i < unestimatedTickets.length; i++) {
+      unestimatedTickets[i].innerHTML += ' <span style="background-color: yellow;">(no estimate)</span>';
+    }
+
 }

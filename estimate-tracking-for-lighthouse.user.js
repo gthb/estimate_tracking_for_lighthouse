@@ -112,23 +112,32 @@ for (var i=0; i < ticketLists.snapshotLength; i++) {
   var thisTicket = tickets.iterateNext();
   while(thisTicket) {
     
+    var estimateFound = false;
+
     // Add hours listed in the ticket title to the user's total
     if (/(\d+(\.\d+)?) *h((ou)?r)?s?/i.test(thisTicket.innerHTML)) {
+      estimateFound = true;
       userHours += parseFloat(RegExp.$1);
     }
     
     // Add minutes too, if they are there
     if (/(\d+(\.\d+)?) *m(in(ute)?)?s?/i.test(thisTicket.innerHTML)) {
+      estimateFound = true;
       userHours += parseFloat(RegExp.$1) / 60.0;
     }
     
     // Also add days, converting 1 day to 8 hours
     if (/(\d+(\.\d+)?) *d(a?y)?s?/i.test(thisTicket.innerHTML)) {
+      estimateFound = true;
       userHours += parseFloat(RegExp.$1) * 8.0;
 
       // If the user uses days in their estimates, we assume that they
       // want totals to be displayed using days as well.
       useDays = true;
+    }
+
+    if (!estimateFound) {
+      thisTicket.innerHTML += ' <span style="background-color: yellow;">(no estimate)</span>';
     }
     
     thisTicket = tickets.iterateNext();

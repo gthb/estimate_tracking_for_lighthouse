@@ -111,6 +111,7 @@ for (var i=0; i < ticketLists.snapshotLength; i++) {
     null);
   
   var thisTicket = tickets.iterateNext();
+  var userUnestimatedTickets = [];
   while(thisTicket) {
     
     var estimateFound = false;
@@ -138,11 +139,13 @@ for (var i=0; i < ticketLists.snapshotLength; i++) {
     }
 
     if (!estimateFound) {
-      unestimatedTickets.push(thisTicket);
+      userUnestimatedTickets.push(thisTicket);
     }
     
     thisTicket = tickets.iterateNext();
   }
+
+  unestimatedTickets = unestimatedTickets.concat(userUnestimatedTickets);
   
   if (userHours > 0.0) {
 
@@ -154,7 +157,10 @@ for (var i=0; i < ticketLists.snapshotLength; i++) {
     var heading = document.evaluate('h3/span[contains(@class, "quiet")]', ticketLists.snapshotItem(i), null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
 
     // Append user's total hours to heading text
-    heading.innerHTML += ' - ' + timeDisp + ' left';
+    heading.innerHTML += ' - ' + timeDisp + ' left'
+        + (userUnestimatedTickets.length == 0 ? '' :
+           ' <span style="background-color: yellow;">(but with ' + userUnestimatedTickets.length + ' unestimated tickets)</span>'
+           );
 
     totalHours += userHours;
     if (userHours > maxHours) {
@@ -196,7 +202,9 @@ if (milestone_progress !== null && totalHours > 0.0) {
     months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     expectedDateDisp = months[expectedDate.getMonth()] + ' ' + expectedDate.getDate();
     milestone_progress.innerHTML += '<br>Total effort left: ' + totalHoursDisp
-        + '.<br><span style="background-color: yellow;">Note, though: there are ' + unestimatedTickets.length + ' unestimated tickets!</span>'
+        + (unestimatedTickets.length == 0 ? '.' :
+           '.<br><span style="background-color: yellow;">Note, though: there are ' + unestimatedTickets.length + ' unestimated tickets!</span>'
+           )
         + '<br>Critical path: ' + maxHoursUser
         + ' with ' + maxHoursDisp
         + ' (' + maxHoursDispDays

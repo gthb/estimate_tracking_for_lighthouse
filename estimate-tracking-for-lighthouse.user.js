@@ -104,7 +104,7 @@ for (var i=0; i < ticketLists.snapshotLength; i++) {
   // Tickets within the list are identified as links inside list item
   // nodes
   var tickets = document.evaluate(
-    'ul/li/a',
+    'ul/li/a[not(@class="tag")]',
     ticketLists.snapshotItem(i),
     null,
     XPathResult.ANY_TYPE,

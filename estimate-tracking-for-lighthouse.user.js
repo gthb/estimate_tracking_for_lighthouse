@@ -112,24 +112,25 @@ for (var i=0; i < ticketLists.snapshotLength; i++) {
   
   var thisTicket = tickets.iterateNext();
   var userUnestimatedTickets = [];
+  var leftsuffix = ' left';
   while(thisTicket) {
     
     var estimateFound = false;
 
     // Add hours listed in the ticket title to the user's total
-    if (/(\d+(\.\d+)?) *h((ou)?r)?s?/i.test(thisTicket.innerHTML)) {
+    if (new RegExp('(\\d+(\\.\\d+)?) *h((ou)?r)?s?' + leftsuffix, 'i').test(thisTicket.innerHTML)) {
       estimateFound = true;
       userHours += parseFloat(RegExp.$1);
     }
     
     // Add minutes too, if they are there
-    if (/(\d+(\.\d+)?) *m(in(ute)?)?s?/i.test(thisTicket.innerHTML)) {
+    if (new RegExp('(\\d+(\\.\\d+)?) *m(in(ute)?)?s?' + leftsuffix, 'i').test(thisTicket.innerHTML)) {
       estimateFound = true;
       userHours += parseFloat(RegExp.$1) / 60.0;
     }
     
     // Also add days, converting 1 day to 8 hours
-    if (/(\d+(\.\d+)?) *d(a?y)?s?/i.test(thisTicket.innerHTML)) {
+    if (new RegExp('(\\d+(\\.\\d+)?) *d(a?y)?s?' + leftsuffix, 'i').test(thisTicket.innerHTML)) {
       estimateFound = true;
       userHours += parseFloat(RegExp.$1) * 8.0;
 
@@ -138,11 +139,17 @@ for (var i=0; i < ticketLists.snapshotLength; i++) {
       useDays = true;
     }
 
-    if (!estimateFound) {
-      userUnestimatedTickets.push(thisTicket);
+    if (leftsuffix && !estimateFound) {
+      // loop again on same ticket without " left" suffix
+      // (yeah, kludgy, I know; this is not a project for long-term investment!)
+      leftsuffix = '';
+    } else {
+      if (!estimateFound) {
+        userUnestimatedTickets.push(thisTicket);
+      }
+      thisTicket = tickets.iterateNext();
+      leftsuffix = ' left';
     }
-    
-    thisTicket = tickets.iterateNext();
   }
 
   unestimatedTickets = unestimatedTickets.concat(userUnestimatedTickets);
